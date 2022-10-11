@@ -1,4 +1,4 @@
-baseURL: "https://adityatelange.github.io/" # if your site is in 'https', then make sure your base url isn't written using 'http' otherwise your sitemap would contain http (as opposeed to https) URLs. This would affect Google indexing of your URLs.
+baseURL: "https://ufukkizilgedik.netlify.app/" # if your site is in 'https', then make sure your base url isn't written using 'http' otherwise your sitemap would contain http (as opposeed to https) URLs. This would affect Google indexing of your URLs.
 title: Ufuk Kızılgedik
 paginate: 5
 theme: PaperMod
@@ -18,7 +18,7 @@ minify:
 
 languages:
     en:
-        languageName: "English"
+        languageName: "EN"
         weight: 1
         taxonomies:
           category: categories
@@ -35,23 +35,18 @@ languages:
                 - name: Tags
                   url: tags/
                   weight: 10
-                - name: WiKi
-                  url: https://github.com/adityatelange/hugo-PaperMod/wiki/
-                - name: Discord
-                  url: https://discord.gg/ahpmTvhVmp
 
-    fr:
-        languageName: ":fr:"
-        languageAltTitle: French
+    tr:
+        languageName: "TR"
+        languageAltTitle: Turkish
         weight: 2
-        title: PaperModL2
         taxonomies:
-          category: FRcategories
-          tag: FRtags
-          series: FRseries
+          category: TRcategories
+          tag: TRtags
+          series: TRseries
         profileMode:
             enabled: true
-            title: PaperMod
+            title: Ufuk Kızılgedik
             imageUrl: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f317.svg"
             imageTitle: ProfileMode image
             # imageWidth: 120
@@ -67,34 +62,17 @@ languages:
                 - name: Archive
                   url: archives/
                   weight: 5
-                - name: FRTags
-                  url: frtags
+                - name: TRTags
+                  url: trtags
                   weight: 10
-                - name: FRCategories
-                  url: frcategories
+                - name: TRCategories
+                  url: trcategories
                   weight: 10
-                - name: FRSeries
-                  url: frseries
+                - name: TRSeries
+                  url: trseries
                   weight: 10
                 - name: NullLink
                   url: "#"
-
-    fa:
-        languagedirection: rtl
-        weight: 3
-        title: PaperMod RTL
-        homeInfoParams:
-            Title: "Hi there \U0001F44B"
-            Content: Welcome to RTL layout
-        taxonomies:
-          category: FAcategories
-          tag: FAtags
-          series: FAseries
-        menu:
-            main:
-                - name: FATags
-                  url: fatags
-                  weight: 10
 
 outputs:
     home:
@@ -104,8 +82,8 @@ outputs:
 
 params:
     env: production # to enable google analytics, opengraph, twitter-cards and schema.
-    description: "Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod"
-    author: Theme PaperMod
+    description: "Ufuk's personal website"
+    author: Ufuk Kızılgedik
     # author: ["Me", "You"] # multiple authors
 
     defaultTheme: auto
