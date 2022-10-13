@@ -3,6 +3,6 @@ title: "Search"
 layout: "search"
 # url: "/archive"
 # description: "Description for Search"
-summary: "search"
+summary: "Search page in English"
 placeholder: "Search..."
 ---

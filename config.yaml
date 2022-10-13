@@ -14,11 +14,12 @@ pygmentsUseClasses: true
 
 minify:
     disableXML: true
-    # minifyOutput: true
+    minifyOutput: true
 
 languages:
     en:
         languageName: "EN"
+        languageAltTitle: English
         weight: 1
         taxonomies:
           category: categories
@@ -36,43 +37,7 @@ languages:
                   url: tags/
                   weight: 10
 
-    tr:
-        languageName: "TR"
-        languageAltTitle: Turkish
-        weight: 2
-        taxonomies:
-          category: TRcategories
-          tag: TRtags
-          series: TRseries
-        profileMode:
-            enabled: true
-            title: Ufuk Kızılgedik
-            imageUrl: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f317.svg"
-            imageTitle: ProfileMode image
-            # imageWidth: 120
-            # imageHeight: 120
-            subtitle: "☄️ Fast | ☁️ Fluent | 🌙 Smooth | 📱 Responsive"
-            buttons:
-                - name: Blog
-                  url: posts
-                - name: Profile Mode
-                  url: https://github.com/adityatelange/hugo-PaperMod/wiki/Features#profile-mode
-        menu:
-            main:
-                - name: Archive
-                  url: archives/
-                  weight: 5
-                - name: TRTags
-                  url: trtags
-                  weight: 10
-                - name: TRCategories
-                  url: trcategories
-                  weight: 10
-                - name: TRSeries
-                  url: trseries
-                  weight: 10
-                - name: NullLink
-                  url: "#"
+
 
 outputs:
     home:
@@ -86,7 +51,7 @@ params:
     author: Ufuk Kızılgedik
     # author: ["Me", "You"] # multiple authors
 
-    defaultTheme: auto
+    defaultTheme: dark
     # disableThemeToggle: true
     ShowShareButtons: true
     ShowReadingTime: true
@@ -98,35 +63,40 @@ params:
     ShowRssButtonInSectionTermList: true
     ShowToc: true
     # comments: false
-    images: ["papermod-cover.png"]
+    images: ["vesika.jpeg"]
 
     profileMode:
-        enabled: false
-        title: PaperMod
-        imageUrl: "#"
-        imageTitle: my image
-        # imageWidth: 120
-        # imageHeight: 120
+        enabled: true
+        title: Ufuk Kızılgedik
+        Subtitle: "I'm a market researcher & digital strategist based in Istanbul and currently employed at Ipsos."
+        imageUrl: "vesika.jpg"
+        imageTitle: Ufuk Kızılgedik
+        imageWidth: 150
+        imageHeight: 150
         buttons:
-            - name: Archives
+            - name: Blog
               url: archives
-            - name: Tags
-              url: tags
+            - name: CV
+              url: "ufuk_cv.pdf"
 
     homeInfoParams:
         Title: "Hello!"
         Content: >
-            This is my personal page.
+            I'm a market researcher & digital strategist based in Istanbul and currently employed at Ipsos.
 
-            - I'll add stuff in time.
+            - This is my personal website for which I plan to write short pieces on things that interest me.
 
-            - Yormayın!
+            - Click [here](/static/ufuk_cv.pdf) to view my CV.
+
+            > 
+
+            - Cheers!
 
     socialIcons:
-        - name: github
-          url: "https://github.com/adityatelange/hugo-PaperMod"
-        - name: KoFi
-          url: "https://ko-fi.com/adityatelange"
+        #- name: github
+          #url: "https://github.com/adityatelange/hugo-PaperMod"
+        #- name: KoFi
+          #url: "https://ko-fi.com/adityatelange"
         - name: Rss
           url: "index.xml"
 
@@ -146,11 +116,12 @@ params:
 
     assets:
         disableHLJS: true
-    #     favicon: "<link / abs url>"
-    #     favicon16x16: "<link / abs url>"
-    #     favicon32x32: "<link / abs url>"
-    #     apple_touch_icon: "<link / abs url>"
-    #     safari_pinned_tab: "<link / abs url>"
+        favicon: "favicon.ico"
+        favicon16x16: "favicon-16x16.png"
+        favicon32x32: "favicon-32x32.png"
+        apple_touch_icon: "apple-touch-icon.png"
+        safari_pinned_tab: "safari-pinned-tab.svg"
+        theme_color: "#F6B933"
 
     # cover:
     #     hidden: true # hide everywhere but not in structured data
