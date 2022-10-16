@@ -99,6 +99,10 @@ params:
           #url: "https://ko-fi.com/adityatelange"
         - name: Rss
           url: "index.xml"
+        - name: Linkedin
+          url: "https://www.linkedin.com/in/ufuk-kızılgedik/"
+        - name: Email
+          url: "mailto: kizilgediku@gmail.com"
 
     # editPost:
         # URL: "https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content"
