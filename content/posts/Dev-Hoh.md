@@ -5,7 +5,6 @@ date: "2022-10-22"
 description: "A deep-dive into an inexplicable natural occurance."
 tags: ["theory", "science", "mystical"]
 ShowToc: true
-ShowBreadCrumbs: false
 ---
 
 ## Introduction

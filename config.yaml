@@ -68,7 +68,7 @@ params:
     profileMode:
         enabled: true
         title: Ufuk Kızılgedik
-        Subtitle: "I'm a market researcher & digital strategist based in Istanbul and currently employed at Ipsos."
+        Subtitle: "I'm a market researcher based in Istanbul and currently employed at [Ipsos](https://www.ipsos.com/tr-tr)."
         imageUrl: "vesika.jpg"
         imageTitle: Ufuk Kızılgedik
         imageWidth: 150
