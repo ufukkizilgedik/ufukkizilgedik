@@ -3,7 +3,7 @@ author: "Ufuk"
 title: "Why I'm quitting tobacco"
 date: "2023-04-21"
 description: "Smoking & Writing: The twin evils..."
-tags: ["smoking", "writing"]
+tags: ["smoking", "writing"] 
 ShowToc: false
 ---
 
