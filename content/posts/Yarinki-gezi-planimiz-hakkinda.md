@@ -1,7 +1,7 @@
 ---
 author: "Ufuk"
 title: "Yarınki gezi planımız hakkında"
-date: "2024-09-18”
+date: "2024-09-18"
 description: "Açıklayabilirim; geçerli zaruratlarım var"
 tags: ["gezi", "yan çiziş"] 
 ShowToc: false
