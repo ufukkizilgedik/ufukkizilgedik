@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Healthcare Specialty Scores Interactive Heatmap</title>
+  <!-- Add Chart.js library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Add Chart.js datalabels plugin for showing values on bars -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .card-header {
+      padding: 20px 20px 10px 20px;
+      border-bottom: 1px solid #eaeaea;
+    }
+    
+    .card-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    
+    @media (min-width: 768px) {
+      .controls {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+    
+    .control-group {
+      margin-bottom: 10px;
+    }
+    
+    label {
+      font-weight: 500;
+      margin-right: 10px;
+    }
+    
+    select {
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .card-content {
+      padding: 20px;
+      overflow-x: auto;
+    }
+    
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 650px;
+    }
+    
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    
+    th {
+      background-color: #f5f5f5;
+      font-weight: 600;
+    }
+    
+    td.row-header {
+      text-align: left;
+      font-weight: 500;
+      background-color: #f5f5f5;
+      white-space: nowrap;
+    }
+    
+    /* Difference-based color classes */
+    .diff-high-positive {
+      background-color: #059669;
+      color: white;
+    }
+    
+    .diff-medium-positive {
+      background-color: #34d399;
+      color: black;
+    }
+    
+    .diff-low-positive {
+      background-color: #a7f3d0;
+      color: black;
+    }
+    
+    .diff-neutral {
+      background-color: #f5f5f5;
+      color: black;
+    }
+    
+    .diff-low-negative {
+      background-color: #fecaca;
+      color: black;
+    }
+    
+    .diff-medium-negative {
+      background-color: #f87171;
+      color: black;
+    }
+    
+    .diff-high-negative {
+      background-color: #dc2626;
+      color: white;
+    }
+    
+    .empty-cell {
+      background-color: #e5e7eb;
+    }
+    
+    .legend {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    
+    .legend-title {
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    
+    .legend-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .legend-item {
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    
+    /* Add styles for the modal popup */
+    .chart-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      z-index: 1000;
+    }
+    
+    .chart-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      max-width: 90%;
+      width: 600px;
+      /* Increase height of chart container */
+      height: 500px;
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    
+    /* Make cells interactive */
+    td.data-cell {
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+    
+    td.data-cell:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+    
+    .chart-title {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-header">
+      <h1 class="card-title">Healthcare Specialty Scores by Country</h1>
+      <div class="controls">
+        <div class="control-group">
+          <label for="metric-select">Metric:</label>
+          <select id="metric-select">
+            <option value="totalScore">TOTAL ONE SCORE</option>
+            <option value="obesity">Obesity as a chronic disease</option>
+            <option value="involvement">Involvement in obesity treatment</option>
+            <option value="approach">Approach towards AOM</option>
+            <option value="openness">Openness to be contacted</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="view-select">View by:</label>
+          <select id="view-select">
+            <option value="country">Country × Specialty</option>
+            <option value="specialty">Specialty × Country</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="card-content">
+      <div id="table-container"></div>
+      <div class="legend">
+        <div class="legend-title">Difference from Mean:</div>
+        <div class="legend-items">
+          <span class="legend-item diff-high-positive">≥ +15</span>
+          <span class="legend-item diff-medium-positive">+5 to +14</span>
+          <span class="legend-item diff-low-positive">+1 to +4</span>
+          <span class="legend-item diff-neutral">0</span>
+          <span class="legend-item diff-low-negative">-1 to -4</span>
+          <span class="legend-item diff-medium-negative">-5 to -14</span>
+          <span class="legend-item diff-high-negative">≤ -15</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal for displaying the chart -->
+  <div id="chart-modal" class="chart-modal">
+    <div class="chart-container">
+      <span class="close-modal" onclick="closeModal()">&times;</span>
+      <h2 id="modal-title" class="chart-title"></h2>
+      <canvas id="metrics-chart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // The dataset from the table including difference data
+    const data = [
+      {country: 'SA', specialty: 'Bariatric Surgery', totalScore: 69, totalScoreDiff: -11, obesity: 18, obesityDiff: -1, involvement: 27, involvementDiff: -3, approach: 7, approachDiff: -7, openness: 17, opennessDiff: 1},
+      {country: 'LEB', specialty: 'Bariatric Surgery', totalScore: 73, totalScoreDiff: 4, obesity: 17, obesityDiff: 0, involvement: 29, involvementDiff: 4, approach: 11, approachDiff: 1, openness: 16, opennessDiff: -1},
+      {country: 'EGY', specialty: 'Cardiology', totalScore: 74, totalScoreDiff: 5, obesity: 16, obesityDiff: -1, involvement: 26, involvementDiff: 3, approach: 15, approachDiff: 2, openness: 17, opennessDiff: 1},
+      {country: 'IR', specialty: 'Cardiology', totalScore: 66, totalScoreDiff: 5, obesity: 16, obesityDiff: 0, involvement: 21, involvementDiff: -1, approach: 13, approachDiff: 2, openness: 15, opennessDiff: 3},
+      {country: 'AZE', specialty: 'Cardiology', totalScore: 58, totalScoreDiff: -5, obesity: 18, obesityDiff: 0, involvement: 18, involvementDiff: -3, approach: 13, approachDiff: -1, openness: 10, opennessDiff: -2},
+      {country: 'SA', specialty: 'Cardiology', totalScore: 64, totalScoreDiff: -15, obesity: 20, obesityDiff: 1, involvement: 27, involvementDiff: -3, approach: 12, approachDiff: -3, openness: 6, opennessDiff: -10},
+      {country: 'KUW', specialty: 'Cardiology', totalScore: 77, totalScoreDiff: 13, obesity: 19, obesityDiff: 0, involvement: 24, involvementDiff: 5, approach: 16, approachDiff: 4, openness: 18, opennessDiff: 4},
+      {country: 'Ba&OM', specialty: 'Cardiology', totalScore: 53, totalScoreDiff: -6, obesity: 13, obesityDiff: -2, involvement: 19, involvementDiff: -2, approach: 9, approachDiff: -2, openness: 12, opennessDiff: 0},
+      {country: 'QA', specialty: 'Cardiology', totalScore: 63, totalScoreDiff: -1, obesity: 18, obesityDiff: 1, involvement: 24, involvementDiff: 0, approach: 10, approachDiff: 1, openness: 10, opennessDiff: -3},
+      {country: 'LEB', specialty: 'Cardiology', totalScore: 81, totalScoreDiff: 11, obesity: 18, obesityDiff: 2, involvement: 27, involvementDiff: 2, approach: 16, approachDiff: 5, openness: 20, opennessDiff: 2},
+      {country: 'UAE', specialty: 'Dermatology', totalScore: 65, totalScoreDiff: -4, obesity: 18, obesityDiff: 1, involvement: 24, involvementDiff: 0, approach: 7, approachDiff: -4, openness: 15, opennessDiff: 0},
+      {country: 'IR', specialty: 'Dermatology', totalScore: 51, totalScoreDiff: -10, obesity: 15, obesityDiff: -1, involvement: 17, involvementDiff: -5, approach: 8, approachDiff: -3, openness: 10, opennessDiff: -2},
+      {country: 'KUW', specialty: 'Dermatology', totalScore: 61, totalScoreDiff: -3, obesity: 18, obesityDiff: 0, involvement: 16, involvementDiff: -3, approach: 11, approachDiff: -1, openness: 16, opennessDiff: 1},
+      {country: 'Ba&OM', specialty: 'Dermatology', totalScore: 45, totalScoreDiff: -13, obesity: 14, obesityDiff: -1, involvement: 16, involvementDiff: -5, approach: 5, approachDiff: -6, openness: 11, opennessDiff: -1},
+      {country: 'QA', specialty: 'Dermatology', totalScore: 49, totalScoreDiff: -15, obesity: 18, obesityDiff: 0, involvement: 16, involvementDiff: -7, approach: 5, approachDiff: -5, openness: 10, opennessDiff: -3},
+      {country: 'EGY', specialty: 'Gastro/Hepatology', totalScore: 76, totalScoreDiff: 7, obesity: 18, obesityDiff: 1, involvement: 26, involvementDiff: 2, approach: 17, approachDiff: 4, openness: 16, opennessDiff: 0},
+      {country: 'UAE', specialty: 'Gastro/Hepatology', totalScore: 79, totalScoreDiff: 11, obesity: 18, obesityDiff: 0, involvement: 27, involvementDiff: 3, approach: 18, approachDiff: 7, openness: 16, opennessDiff: 1},
+      {country: 'AZE', specialty: 'Gastro/Hepatology', totalScore: 69, totalScoreDiff: 6, obesity: 19, obesityDiff: 1, involvement: 22, involvementDiff: 2, approach: 13, approachDiff: -1, openness: 15, opennessDiff: 3},
+      {country: 'LEB', specialty: 'Gastro/Hepatology', totalScore: 66, totalScoreDiff: -3, obesity: 18, obesityDiff: 1, involvement: 20, involvementDiff: -5, approach: 11, approachDiff: 1, openness: 17, opennessDiff: -1},
+      {country: 'EGY', specialty: 'Gynecology', totalScore: 69, totalScoreDiff: 1, obesity: 18, obesityDiff: 1, involvement: 22, involvementDiff: -1, approach: 13, approachDiff: 0, openness: 16, opennessDiff: 0},
+      {country: 'AZE', specialty: 'Gynecology', totalScore: 60, totalScoreDiff: -3, obesity: 18, obesityDiff: 0, involvement: 18, involvementDiff: -2, approach: 14, approachDiff: 1, openness: 10, opennessDiff: -2},
+      {country: 'SA', specialty: 'Gynecology', totalScore: 85, totalScoreDiff: 5, obesity: 19, obesityDiff: 0, involvement: 31, involvementDiff: 1, approach: 16, approachDiff: 2, openness: 18, opennessDiff: 2},
+      {country: 'KUW', specialty: 'Gynecology', totalScore: 64, totalScoreDiff: 0, obesity: 18, obesityDiff: 0, involvement: 21, involvementDiff: 2, approach: 9, approachDiff: -2, openness: 15, opennessDiff: 1},
+      {country: 'Ba&OM', specialty: 'Gynecology', totalScore: 56, totalScoreDiff: -3, obesity: 15, obesityDiff: 0, involvement: 22, involvementDiff: 1, approach: 9, approachDiff: -2, openness: 10, opennessDiff: -2},
+      {country: 'QA', specialty: 'Gynecology', totalScore: 70, totalScoreDiff: 7, obesity: 17, obesityDiff: -1, involvement: 26, involvementDiff: 2, approach: 11, approachDiff: 2, openness: 17, opennessDiff: 3},
+      {country: 'LEB', specialty: 'Gynecology', totalScore: 63, totalScoreDiff: -6, obesity: 18, obesityDiff: 1, involvement: 20, involvementDiff: -4, approach: 10, approachDiff: 0, openness: 15, opennessDiff: -2},
+      {country: 'UAE', specialty: 'Nephrology', totalScore: 77, totalScoreDiff: 9, obesity: 18, obesityDiff: 1, involvement: 22, involvementDiff: -2, approach: 18, approachDiff: 7, openness: 19, opennessDiff: 3},
+      {country: 'KUW', specialty: 'Nephrology', totalScore: 57, totalScoreDiff: -7, obesity: 19, obesityDiff: 1, involvement: 16, involvementDiff: -3, approach: 12, approachDiff: 0, openness: 9, opennessDiff: -6},
+      {country: 'QA', specialty: 'Nephrology', totalScore: 65, totalScoreDiff: 2, obesity: 16, obesityDiff: -1, involvement: 25, involvementDiff: 2, approach: 9, approachDiff: -1, openness: 16, opennessDiff: 2},
+      {country: 'UAE', specialty: 'Orthopedics', totalScore: 55, totalScoreDiff: -14, obesity: 16, obesityDiff: -2, involvement: 23, involvementDiff: -1, approach: 7, approachDiff: -4, openness: 9, opennessDiff: -7},
+      {country: 'EGY', specialty: 'Orthopedics', totalScore: 62, totalScoreDiff: -7, obesity: 17, obesityDiff: 1, involvement: 20, involvementDiff: -3, approach: 9, approachDiff: -4, openness: 15, opennessDiff: 0},
+      {country: 'IR', specialty: 'Orthopedics', totalScore: 54, totalScoreDiff: -7, obesity: 15, obesityDiff: -1, involvement: 17, involvementDiff: -5, approach: 11, approachDiff: 0, openness: 11, opennessDiff: -1},
+      {country: 'AZE', specialty: 'Orthopedics', totalScore: 48, totalScoreDiff: -15, obesity: 18, obesityDiff: 0, involvement: 12, involvementDiff: -9, approach: 12, approachDiff: -1, openness: 7, opennessDiff: -5},
+      {country: 'SA', specialty: 'Orthopedics', totalScore: 59, totalScoreDiff: -21, obesity: 19, obesityDiff: 0, involvement: 24, involvementDiff: -6, approach: 6, approachDiff: -8, openness: 10, opennessDiff: -6},
+      {country: 'KUW', specialty: 'Orthopedics', totalScore: 54, totalScoreDiff: -10, obesity: 18, obesityDiff: 0, involvement: 16, involvementDiff: -3, approach: 9, approachDiff: -3, openness: 11, opennessDiff: -4},
+      {country: 'Ba&OM', specialty: 'Orthopedics', totalScore: 52, totalScoreDiff: -6, obesity: 13, obesityDiff: -1, involvement: 17, involvementDiff: -4, approach: 11, approachDiff: 0, openness: 11, opennessDiff: -1},
+      {country: 'QA', specialty: 'Orthopedics', totalScore: 51, totalScoreDiff: -13, obesity: 18, obesityDiff: 0, involvement: 20, involvementDiff: -4, approach: 4, approachDiff: -6, openness: 10, opennessDiff: -4},
+      {country: 'EGY', specialty: 'Pediatrics', totalScore: 89, totalScoreDiff: 21, obesity: 18, obesityDiff: 1, involvement: 33, involvementDiff: 9, approach: 19, approachDiff: 6, openness: 20, opennessDiff: 5},
+      {country: 'UAE', specialty: 'Pediatrics', totalScore: 72, totalScoreDiff: 4, obesity: 17, obesityDiff: 0, involvement: 27, involvementDiff: 3, approach: 10, approachDiff: -1, openness: 18, opennessDiff: 3},
+      {country: 'IR', specialty: 'Pediatrics', totalScore: 56, totalScoreDiff: -5, obesity: 19, obesityDiff: 2, involvement: 25, involvementDiff: 3, approach: 5, approachDiff: -6, openness: 8, opennessDiff: -4},
+      {country: 'AZE', specialty: 'Pediatrics', totalScore: 53, totalScoreDiff: -10, obesity: 15, obesityDiff: -3, involvement: 11, involvementDiff: -9, approach: 12, approachDiff: -2, openness: 15, opennessDiff: 4},
+      {country: 'SA', specialty: 'Pediatrics', totalScore: 76, totalScoreDiff: -4, obesity: 17, obesityDiff: -2, involvement: 32, involvementDiff: 1, approach: 11, approachDiff: -3, openness: 16, opennessDiff: 0},
+      {country: 'KUW', specialty: 'Pediatrics', totalScore: 47, totalScoreDiff: -17, obesity: 16, obesityDiff: -3, involvement: 18, involvementDiff: -2, approach: 4, approachDiff: -8, openness: 10, opennessDiff: -5},
+      {country: 'Ba&OM', specialty: 'Pediatrics', totalScore: 74, totalScoreDiff: 16, obesity: 19, obesityDiff: 5, involvement: 27, involvementDiff: 6, approach: 10, approachDiff: 0, openness: 18, opennessDiff: 6},
+      {country: 'QA', specialty: 'Pediatrics', totalScore: 82, totalScoreDiff: 18, obesity: 15, obesityDiff: -2, involvement: 31, involvementDiff: 7, approach: 17, approachDiff: 7, openness: 19, opennessDiff: 6},
+      {country: 'LEB', specialty: 'Pediatrics', totalScore: 69, totalScoreDiff: -1, obesity: 16, obesityDiff: 0, involvement: 27, involvementDiff: 2, approach: 7, approachDiff: -3, openness: 18, opennessDiff: 1},
+      {country: 'UAE', specialty: 'Plastic Surgery', totalScore: 60, totalScoreDiff: -9, obesity: 19, obesityDiff: 1, involvement: 22, involvementDiff: -2, approach: 9, approachDiff: -2, openness: 10, opennessDiff: -5},
+      {country: 'EGY', specialty: 'Plastic Surgery', totalScore: 63, totalScoreDiff: -5, obesity: 16, obesityDiff: -1, involvement: 24, involvementDiff: 0, approach: 12, approachDiff: -1, openness: 12, opennessDiff: -4},
+      {country: 'IR', specialty: 'Plastic Surgery', totalScore: 78, totalScoreDiff: 17, obesity: 19, obesityDiff: 2, involvement: 32, involvementDiff: 10, approach: 14, approachDiff: 3, openness: 14, opennessDiff: 2},
+      {country: 'KUW', specialty: 'Plastic Surgery', totalScore: 75, totalScoreDiff: 11, obesity: 18, obesityDiff: 0, involvement: 22, involvementDiff: 3, approach: 17, approachDiff: 5, openness: 19, opennessDiff: 4},
+      {country: 'Ba&OM', specialty: 'Plastic Surgery', totalScore: 51, totalScoreDiff: -7, obesity: 15, obesityDiff: 1, involvement: 17, involvementDiff: -4, approach: 9, approachDiff: -1, openness: 10, opennessDiff: -2},
+      {country: 'QA', specialty: 'Plastic Surgery', totalScore: 67, totalScoreDiff: 3, obesity: 17, obesityDiff: 0, involvement: 16, involvementDiff: -7, approach: 14, approachDiff: 4, openness: 20, opennessDiff: 6},
+      {country: 'IR', specialty: 'Primary Care', totalScore: 72, totalScoreDiff: 10, obesity: 17, obesityDiff: 1, involvement: 24, involvementDiff: 2, approach: 15, approachDiff: 4, openness: 16, opennessDiff: 4},
+      {country: 'AZE', specialty: 'Primary Care', totalScore: 73, totalScoreDiff: 10, obesity: 17, obesityDiff: 0, involvement: 27, involvementDiff: 7, approach: 14, approachDiff: 1, openness: 14, opennessDiff: 2},
+      {country: 'SA', specialty: 'Primary Care', totalScore: 91, totalScoreDiff: 11, obesity: 19, obesityDiff: 0, involvement: 34, involvementDiff: 4, approach: 18, approachDiff: 4, openness: 19, opennessDiff: 3},
+      {country: 'LEB', specialty: 'Primary Care', totalScore: 69, totalScoreDiff: 0, obesity: 16, obesityDiff: -1, involvement: 26, involvementDiff: 1, approach: 10, approachDiff: 0, openness: 17, opennessDiff: 0},
+      {country: 'EGY', specialty: 'Psychiatry', totalScore: 60, totalScoreDiff: -9, obesity: 15, obesityDiff: -1, involvement: 20, involvementDiff: -3, approach: 9, approachDiff: -4, openness: 16, opennessDiff: 0},
+      {country: 'IR', specialty: 'Psychiatry', totalScore: 46, totalScoreDiff: -15, obesity: 15, obesityDiff: -1, involvement: 18, involvementDiff: -3, approach: 4, approachDiff: -7, openness: 8, opennessDiff: -4},
+      {country: 'SA', specialty: 'Psychiatry', totalScore: 84, totalScoreDiff: 4, obesity: 19, obesityDiff: 0, involvement: 31, involvementDiff: 0, approach: 18, approachDiff: 3, openness: 16, opennessDiff: 0},
+      {country: 'KUW', specialty: 'Psychiatry', totalScore: 62, totalScoreDiff: -2, obesity: 19, obesityDiff: 0, involvement: 17, involvementDiff: -3, approach: 13, approachDiff: 1, openness: 14, opennessDiff: -1},
+      {country: 'Ba&OM', specialty: 'Psychiatry', totalScore: 41, totalScoreDiff: -17, obesity: 12, obesityDiff: -3, involvement: 19, involvementDiff: -2, approach: 6, approachDiff: -4, openness: 4, opennessDiff: -8},
+      {country: 'QA', specialty: 'Psychiatry', totalScore: 61, totalScoreDiff: -2, obesity: 15, obesityDiff: -3, involvement: 25, involvementDiff: 2, approach: 10, approachDiff: 0, openness: 12, opennessDiff: -2},
+      {country: 'LEB', specialty: 'Psychiatry', totalScore: 56, totalScoreDiff: -14, obesity: 15, obesityDiff: -2, involvement: 19, involvementDiff: -6, approach: 4, approachDiff: -6, openness: 18, opennessDiff: 0},
+      {country: 'UAE', specialty: 'Respiratory Medicine', totalScore: 67, totalScoreDiff: -2, obesity: 18, obesityDiff: 0, involvement: 22, involvementDiff: -3, approach: 10, approachDiff: -1, openness: 16, opennessDiff: 1},
+      {country: 'IR', specialty: 'Respiratory Medicine', totalScore: 59, totalScoreDiff: -2, obesity: 17, obesityDiff: 0, involvement: 21, involvementDiff: -1, approach: 11, approachDiff: 0, openness: 10, opennessDiff: -2},
+      {country: 'SA', specialty: 'Respiratory Medicine', totalScore: 86, totalScoreDiff: 6, obesity: 20, obesityDiff: 1, involvement: 32, involvementDiff: 1, approach: 17, approachDiff: 2, openness: 18, opennessDiff: 2},
+      {country: 'KUW', specialty: 'Respiratory Medicine', totalScore: 65, totalScoreDiff: 1, obesity: 19, obesityDiff: 1, involvement: 19, involvementDiff: 0, approach: 12, approachDiff: 1, openness: 15, opennessDiff: 0},
+      {country: 'Ba&OM', specialty: 'Respiratory Medicine', totalScore: 84, totalScoreDiff: 25, obesity: 18, obesityDiff: 3, involvement: 30, involvementDiff: 9, approach: 18, approachDiff: 8, openness: 17, opennessDiff: 5},
+      {country: 'QA', specialty: 'Respiratory Medicine', totalScore: 75, totalScoreDiff: 12, obesity: 19, obesityDiff: 1, involvement: 27, involvementDiff: 4, approach: 14, approachDiff: 4, openness: 16, opennessDiff: 3},
+      {country: 'LEB', specialty: 'Respiratory Medicine', totalScore: 63, totalScoreDiff: -6, obesity: 15, obesityDiff: -1, involvement: 26, involvementDiff: 1, approach: 6, approachDiff: -5, openness: 17, opennessDiff: -1}
+    ];
+
+    // Register the datalabels plugin
+    Chart.register(ChartDataLabels);
+
+    // Chart object for reuse
+    let metricsChart = null;
+
+    // Function to calculate average difference for a dimension
+    function calculateAverageDifference(items, dimension) {
+      return items.map(item => {
+        const relevantItems = data.filter(d => d[dimension] === item);
+        const sum = relevantItems.reduce((acc, curr) => acc + curr.totalScoreDiff, 0);
+        const avg = sum / relevantItems.length;
+        return { item, avgDiff: avg };
+      });
+    }
+
+    // Function to determine cell color class based on difference from mean
+    function getDiffColorClass(diffValue) {
+      if (diffValue >= 15) return 'diff-high-positive';
+      if (diffValue >= 5) return 'diff-medium-positive';
+      if (diffValue > 0) return 'diff-low-positive';
+      if (diffValue === 0) return 'diff-neutral';
+      if (diffValue >= -4) return 'diff-low-negative';
+      if (diffValue >= -14) return 'diff-medium-negative';
+      return 'diff-high-negative';
+    }
+
+    // Function to open the modal and display chart
+    function showMetricsChart(cellData) {
+      const modal = document.getElementById('chart-modal');
+      const title = document.getElementById('modal-title');
+      
+      title.innerText = `${cellData.country} - ${cellData.specialty}: Difference from Mean`;
+      
+      // Create or update chart
+      const ctx = document.getElementById('metrics-chart').getContext('2d');
+      
+      if (metricsChart) {
+        metricsChart.destroy();
+      }
+      
+      metricsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: [
+            "TOTAL ONE SCORE",
+            "Obesity as a chronic disease",
+            "Involvement in obesity treatment",
+            "Approach towards AOM",
+            "Openness to be contacted"
+          ],
+          datasets: [
+            {
+              label: 'Difference from Mean',
+              data: [
+                cellData.totalScoreDiff,
+                cellData.obesityDiff,
+                cellData.involvementDiff,
+                cellData.approachDiff,
+                cellData.opennessDiff
+              ],
+              backgroundColor: function(context) {
+                const value = context.dataset.data[context.dataIndex];
+                return value >= 0 ? '#34d399' : '#f87171';
+              },
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              title: {
+                display: true,
+                text: 'Difference from Mean'
+              }
+            },
+            x: {
+              ticks: {
+                autoSkip: false,
+                maxRotation: 45,
+                minRotation: 45
+              }
+            }
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: 'Difference from Mean Scores',
+              font: {
+                size: 16
+              }
+            },
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                title: function(context) {
+                  return context[0].label;
+                },
+                label: function(context) {
+                  const value = context.raw;
+                  return `Difference: ${value >= 0 ? '+' : ''}${value}`;
+                }
+              }
+            },
+            datalabels: {
+              color: function(context) {
+                const value = context.dataset.data[context.dataIndex];
+                return value >= 7 || value <= -7 ? 'white' : 'black';
+              },
+              font: {
+                weight: 'bold'
+              },
+              formatter: function(value) {
+                return value >= 0 ? `+${value}` : value;
+              }
+            }
+          }
+        }
+      });
+      
+      modal.style.display = 'block';
+    }
+
+    // Function to close the modal
+    function closeModal() {
+      document.getElementById('chart-modal').style.display = 'none';
+    }
+
+    // Function to render the table based on current selections
+    function renderTable() {
+      const metricSelect = document.getElementById('metric-select');
+      const viewSelect = document.getElementById('view-select');
+      
+      const selectedMetric = metricSelect.value;
+      const selectedView = viewSelect.value;
+      
+      let rowDimension, columnDimension, rowItems, columnItems;
+      
+      // Custom country order
+      const customCountryOrder = ['UAE', 'Ba&OM', 'KUW', 'QA', 'LEB', 'IR', 'AZE', 'EGY', 'SA'];
+      
+      if (selectedView === 'country') {
+        columnDimension = 'country';
+        rowDimension = 'specialty';
+        // Use custom country order instead of sorting
+        columnItems = [...new Set(data.map(item => item.country))];
+        columnItems = customCountryOrder.filter(country => columnItems.includes(country));
+        rowItems = [...new Set(data.map(item => item.specialty))];
+      } else {
+        columnDimension = 'specialty';
+        rowDimension = 'country';
+        columnItems = [...new Set(data.map(item => item.specialty))];
+        rowItems = [...new Set(data.map(item => item.country))];
+        // Use custom country order for rows when viewing by specialty
+        rowItems = customCountryOrder.filter(country => rowItems.includes(country));
+      }
+      
+      // Calculate average differences (only for specialties sorting)
+      const columnAvgDiffs = calculateAverageDifference(columnItems, columnDimension);
+      const rowAvgDiffs = calculateAverageDifference(rowItems, rowDimension);
+      
+      // Only sort specialties by average difference, keep countries in custom order
+      if (selectedView === 'country') {
+        rowItems = rowItems.sort((a, b) => {
+          const aDiff = rowAvgDiffs.find(d => d.item === a).avgDiff;
+          const bDiff = rowAvgDiffs.find(d => d.item === b).avgDiff;
+          return bDiff - aDiff;
+        });
+      } else {
+        columnItems = columnItems.sort((a, b) => {
+          const aDiff = columnAvgDiffs.find(d => d.item === a).avgDiff;
+          const bDiff = columnAvgDiffs.find(d => d.item === b).avgDiff;
+          return bDiff - aDiff;
+        });
+      }
+      
+      // Create table HTML
+      let tableHTML = '<table>';
+      
+      // Header row
+      tableHTML += '<tr><th></th>';
+      columnItems.forEach(columnItem => {
+        tableHTML += `<th>${columnItem}</th>`;
+      });
+      tableHTML += '</tr>';
+      
+      // Data rows
+      rowItems.forEach(rowItem => {
+        tableHTML += `<tr><td class="row-header">${rowItem}</td>`;
+        
+        columnItems.forEach(columnItem => {
+          const cell = data.find(
+            item => item[rowDimension] === rowItem && item[columnDimension] === columnItem
+          );
+          
+          if (cell) {
+            const value = cell[selectedMetric];
+            
+            // Determine color class based on difference when showing total score
+            const colorClass = selectedMetric === 'totalScore' 
+              ? getDiffColorClass(cell.totalScoreDiff)
+              : getDiffColorClass(cell[selectedMetric + 'Diff']);
+            
+            if (selectedMetric === 'totalScore') {
+              // Add both actual score and difference for total score
+              tableHTML += `<td class="${colorClass} data-cell" 
+                           data-country="${cell.country}" 
+                           data-specialty="${cell.specialty}"
+                           onclick="handleCellClick(this)">${value} (${cell.totalScoreDiff >= 0 ? '+' : ''}${cell.totalScoreDiff})</td>`;
+            } else {
+              // Add both actual score and difference for other metrics
+              const diffValue = cell[selectedMetric + 'Diff'];
+              tableHTML += `<td class="${colorClass}" title="${rowItem}, ${columnItem}: ${value}">${value} (${diffValue >= 0 ? '+' : ''}${diffValue})</td>`;
+            }
+          } else {
+            tableHTML += '<td class="empty-cell">-</td>';
+          }
+        });
+        
+        tableHTML += '</tr>';
+      });
+      
+      tableHTML += '</table>';
+      
+      // Update the table container
+      document.getElementById('table-container').innerHTML = tableHTML;
+    }
+    
+    // Function to handle cell click
+    function handleCellClick(cell) {
+      const country = cell.getAttribute('data-country');
+      const specialty = cell.getAttribute('data-specialty');
+      
+      const cellData = data.find(item => 
+        item.country === country && item.specialty === specialty
+      );
+      
+      if (cellData) {
+        showMetricsChart(cellData);
+      }
+    }
+    
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('chart-modal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+    
+    // Initialize the table
+    renderTable();
+    
+    // Add event listeners to the selects
+    document.getElementById('metric-select').addEventListener('change', renderTable);
+    document.getElementById('view-select').addEventListener('change', renderTable);
+  </script>
+</body>
+</html>
