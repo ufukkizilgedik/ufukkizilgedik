@@ -1,0 +1,22 @@
+/*
+ * The grid is a repeating gradient that draws a thin, faint line every 24px.
+ */
+
+/* Define your variable in a high-level selector like :root or body */
+body {
+    --grid-lh: 31.7px; /* <== CHANGE YOUR LINE HEIGHT HERE */
+}
+
+body.show-baseline-grid {
+    background-image: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        /* Create a transparent space up to 1px before the line height */
+        transparent calc(var(--grid-lh) - 1px),
+        /* Draw a 1px line at the line height */
+        rgba(115, 194, 251, 0.8) calc(var(--grid-lh) - 1px),
+        rgba(115, 194, 251, 0.8) var(--grid-lh)
+    );
+    background-size: 100% var(--grid-lh);
+    background-position: 0 18px; 
+}
