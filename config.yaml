@@ -78,7 +78,7 @@ params:
             - name: Blog
               url: archives
             - name: CV
-              url: "ufuk_cv.pdf"
+              url: "Ufuk_Kizilgedik_CV_Sep2025.pdf"
 
     homeInfoParams:
         Title: "Hello!"
@@ -87,7 +87,7 @@ params:
 
             - This is my personal website for which I plan to write short pieces on things that interest me.
 
-            - Click [here](/static/ufuk_cv.pdf) to view my CV.
+            - Click [here](/static/Ufuk_Kizilgedik_CV_Sep2025.pdf) to view my CV.
 
             > 
 
