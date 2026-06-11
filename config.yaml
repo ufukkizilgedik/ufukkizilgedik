@@ -78,12 +78,12 @@ params:
             - name: Blog
               url: archives
             - name: CV
-              url: "Ufuk_Kizilgedik_CV_Sep2025.pdf"
+              url: "ufuk_cv.pdf"
 
     homeInfoParams:
         Title: "Hello!"
         Content: >
-            I'm a market researcher & digital strategist based in Istanbul and currently employed at Ipsos.
+            I'm a market researcher & digital strategist based in Istanbul and employed at Ipsos.
 
             - This is my personal website for which I plan to write short pieces on things that interest me.
 
