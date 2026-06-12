@@ -76,21 +76,37 @@
 <!-- Font preload -->
 <link rel="preload" href="/fonts/sans-regular.woff2" as="font" type="font/woff2" crossorigin>
 
+<link rel="preload" href="/fonts/sans-regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/sans-italic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/sans-bold.woff2" as="font" type="font/woff2" crossorigin>
+
 <style>
-  /* Original "sans" fonts (which act as serif) */
+  /* "sans" font family */
   @font-face {
     font-family: "sans";
     font-display: swap;
-    src: url("/fonts/sans-regular.woff2") format("woff2");
+    src: url("/fonts/sans-regular.woff2") format("woff2"),
+         url("/fonts/sans-regular.woff") format("woff");
     font-style: normal;
     font-weight: 400;
   }
+  
   @font-face {
     font-family: "sans";
     font-display: swap;
-    src: url("/fonts/sans-italic.woff2") format("woff2");
+    src: url("/fonts/sans-italic.woff2") format("woff2"),
+         url("/fonts/sans-italic.woff") format("woff");
     font-style: italic;
     font-weight: 400;
+  }
+
+  @font-face {
+    font-family: "sans";
+    font-display: swap;
+    src: url("/fonts/sans-bold.woff2") format("woff2"),
+         url("/fonts/sans-bold.woff") format("woff");
+    font-style: normal;
+    font-weight: 700;
   }
 
   /* Fallback */
