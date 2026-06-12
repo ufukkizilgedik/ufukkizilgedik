@@ -1,0 +1,12 @@
+
+.nav, .buttons, .archive-year-header, .archive-month-header, .archive-meta, .toc, .breadcrumbs, .post-tags, .footer, .post-meta, .terms-tags, .entry-footer, body, .paginav {
+    font-family: "Franziska Pro";
+}
+
+.post-title {
+    margin-top:0.5rem
+}
+
+.archive-month-header, .archive-year-header {
+    color: var(--secondary)
+}
