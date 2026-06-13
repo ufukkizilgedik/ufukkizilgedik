@@ -5,3 +5,21 @@
 .archive-month-header, .archive-year-header {
     color: var(--secondary)
 }
+
+body {
+    font-size: 21px;
+}
+
+nav, h2, h3, h4, h5, h6, .post-tags, .breadcrumbs, .buttons, .archive-meta, .post-meta, .footer, .entry-footer, .terms-tags{
+    font-family: "main";
+    font-weight: 400;
+    font-feature-settings: "liga", "clig", "pnum" on, "lnum" on, "ss01" off
+}
+
+h1 {
+    font-weight: 700;
+}
+
+.archive-entry-title {
+    font-family: "sans";
+}
