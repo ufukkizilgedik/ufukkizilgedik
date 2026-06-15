@@ -10,6 +10,12 @@ body {
     font-size: 21px;
 }
 
+@media only screen and (max-width: 600px) {
+    body {
+        font-size: 18px;
+    }
+}
+
 nav, h2, h3, h4, h5, h6, .post-tags, .breadcrumbs, .buttons, .archive-meta, .post-meta, .footer, .entry-footer, .terms-tags{
     font-family: "main";
     font-weight: 400;
