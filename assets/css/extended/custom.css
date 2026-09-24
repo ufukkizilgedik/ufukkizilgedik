@@ -1,107 +1,118 @@
 /* ---------------------------------------------------------------
-   Measure
+   Layout
    --------------------------------------------------------------- */
 
 :root {
-  --main-width: 42rem;   /* 672px — was 720px */
-
-  /* Optional: pull the nav in to align with the text column.
-     Leave commented if you like the wide header.
-     --nav-width: 42rem; */
+    --main-width: 42rem;      /* 672px; PaperMod default is 720px */
+    /* --nav-width: 42rem;       uncomment to align nav with text column */
 }
 
 /* ---------------------------------------------------------------
-   Base size
+   Base type
    --------------------------------------------------------------- */
 
 body {
-  font-size: 21px;                                    /* fallback */
-  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.3125rem); /* 18 → 21px */
-  line-height: 1.6;
-}
-
-/* ---------------------------------------------------------------
-   Your existing rules
-   --------------------------------------------------------------- */
-
-.post-title {
-  margin-top: 0.5rem;
-  font-size: 2.1em;
-}
-
-.archive-month-header,
-.archive-year-header {
-  color: var(--secondary);
-}
-
-nav, h4, h5, h6, .post-tags, .breadcrumbs, .buttons,
-.archive-meta, .post-meta, .footer, .entry-footer, .terms-tags {
-  font-family: "main";
-  font-weight: 400;
-  font-feature-settings: "liga", "clig", "pnum" on, "lnum" on, "ss01" off;
+    font-size: clamp(1.25rem, 1.2083rem + 0.1667vw, 1.3125rem); /* 20px phone, 21px desktop */
+    line-height: 1.6;
 }
 
 h1 {
-  font-weight: 700;
+    font-weight: 400;
 }
 
-.archive-entry-title {
-  font-family: "sans";
-  font-size: 1.5em;
-}
-
-/* ---------------------------------------------------------------
-   Headings — em-based, tracking the body clamp.
-   At 21px body these equal the current px values exactly.
-   --------------------------------------------------------------- */
-
-.post-title {
-    margin-bottom: 0.22em;
-    font-size: 2.1em;        /* 40px @ 21 */
-    line-height: 1.2;
-}
-
-.post-content h1 {
-    margin: 1em auto 0.8em;  /* 40 / 32 */
-    font-size: 2.1em;        /* 40px @ 21 */
-    line-height: 1.2;
-    margin-top: 1.6em; 
-}
-
-.post-content h2 {
-    margin: 1em auto 0.75em; /* 32 / 24 */
-    font-size: 1.52em;       /* 32px @ 21 */
-    line-height: 1.25;
-    margin-top: 1.75em;
-}
-
-.post-content h3 {
-    margin: 1em 0 0.67em;    /* 24 / 16 */
-    font-size: 1.14em;       /* 24px @ 21 */
-    line-height: 1.3;
-    margin-top: 1.83em;
-}
-
-.post-content h4 {
-    margin: 1.5em 0 1em;     /* 24 / 16 */
-    font-size: 0.76em;       /* 16px @ 21 */
-}
-
-.post-content h5 {
-    margin: 1.71em 0 1.14em; /* 24 / 16 */
-    font-size: 0.67em;       /* 14px @ 21 */
-}
-
-.post-content h6 {
-    margin: 2em 0 1.33em;    /* 24 / 16 */
-    font-size: 0.57em;       /* 12px @ 21 */
-}
-
-.post-content h2, .post-content h3, .post-content h4 {
+/* UI text and minor headings: "main" family, lining proportional figures */
+nav, h4, h5, h6,
+.post-content h2, .post-content h3,
+.post-tags, .breadcrumbs, .buttons,
+.archive-meta, .post-meta, .footer, .entry-footer, .terms-tags {
     font-family: "main";
     font-feature-settings: "liga", "clig", "pnum" on, "lnum" on, "ss01" off;
 }
 
+nav, h4, h5, h6,
+.post-tags, .breadcrumbs, .buttons,
+.archive-meta, .post-meta, .footer, .entry-footer, .terms-tags {
+    font-weight: 400;
+}
+
+/* ---------------------------------------------------------------
+   Post header: title, description, meta at equal spacing
+   --------------------------------------------------------------- */
+
+.post-header {
+    margin-top: 0;
+    margin-bottom:1.6em;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;                 /* 1 × body: 21px desktop, 20px phone */
+}
+
+.post-title {
+    margin: 0.5em 0 0;        /* top space only; gap handles the rest */
+    font-size: 2.1em;         /* 44px @ 21 */
+    line-height: 1.2;
+}
+
+.post-description,
+.post-meta {
+    margin: 0;
+}
+
+.post-meta, .breadcrumbs {
+  font-size: 0.8em
+}
+
+/* ---------------------------------------------------------------
+   Content headings (em-based, tracking the body clamp)
+   --------------------------------------------------------------- */
+
+.post-content h1 {
+    margin: 1.6em auto 0.8em;
+    font-size: 2.1em;         /* 44px @ 21 */
+    line-height: 1.2;
+}
+
+.post-content h2 {
+    margin: 1.75em auto 0.75em;
+    font-size: 1.52em;        /* 32px @ 21 */
+    line-height: 1.25;
+}
+
+.post-content h3 {
+    margin: 1.83em 0 0.67em;
+    font-size: 1.14em;        /* 24px @ 21 */
+    line-height: 1.3;
+}
+
+.post-content h4 { margin: 1.5em  0 1em;    font-size: 0.76em; } /* 16px @ 21 */
+.post-content h5 { margin: 1.71em 0 1.14em; font-size: 0.67em; } /* 14px @ 21 */
+.post-content h6 { margin: 2em    0 1.33em; font-size: 0.57em; } /* 12px @ 21 */
+
+/* ---------------------------------------------------------------
+   Lists and archive
+   --------------------------------------------------------------- */
+
 .entry-content {
     font-size: 0.86em;
+}
+
+.archive-entry-title {
+    font-family: "sans";
+    font-size: 1.5em;
+}
+
+.archive-month-header,
+.archive-year-header {
+    color: var(--secondary);
+}
+
+/* ---------------------------------------------------------------
+   Mobile
+   --------------------------------------------------------------- */
+
+@media (max-width: 600px) {
+    :root { --gap: 1.1rem; }
+    .post-title,
+    .post-content h1 { font-size: 1.8em; }
+    .post-content h2 { font-size: 1.4em; }
 }
