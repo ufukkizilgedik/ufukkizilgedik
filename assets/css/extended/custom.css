@@ -5,6 +5,7 @@
 :root {
     --main-width: 42rem;      /* 672px; PaperMod default is 720px */
     /* --nav-width: 42rem;       uncomment to align nav with text column */
+    --content-gap: 1.6em;
 }
 
 /* ---------------------------------------------------------------
@@ -35,28 +36,34 @@ nav, h4, h5, h6,
     font-weight: 400;
 }
 
+.post-footer {
+    margin-top: calc(2* var(--content-gap));
+}
+
 /* ---------------------------------------------------------------
    Post header: title, description, meta at equal spacing
    --------------------------------------------------------------- */
 
 .post-header {
     margin-top: 0;
-    margin-bottom:1.6em;
+    margin-bottom:calc(2* var(--content-gap));
     display: flex;
     flex-direction: column;
     gap: 1em;                 /* 1 × body: 21px desktop, 20px phone */
 }
 
 .post-title {
-    margin: 0.5em 0 0;        /* top space only; gap handles the rest */
+    margin: 1em 0 0;        /* top space only; gap handles the rest */
     font-size: 2.1em;         /* 44px @ 21 */
     line-height: 1.2;
+    letter-spacing: -0.015em;
 }
 
 .post-description,
 .post-meta {
     margin: 0;
 }
+
 
 .post-meta, .breadcrumbs {
   font-size: 0.8em
@@ -115,4 +122,5 @@ nav, h4, h5, h6,
     .post-title,
     .post-content h1 { font-size: 1.8em; }
     .post-content h2 { font-size: 1.4em; }
+    .nav {border-bottom: 1px solid var(--primary);}
 }
