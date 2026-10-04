@@ -17,6 +17,8 @@ In other words, communication, when done in equal footing, when the initiator an
 
 Summing up my thoughts, writing is a narcissistic practice par excellence. This is so because (1) it is motivated by a desire to be recognized, which in turn deemed impossible because recognition sought is to made (2) by abstract entities, which is never satisfying.
 
+---
+
 Despite my hopefully understandable hate for writing, I made you read this shit that I spent hours writing. But, I have a legitimate reason, sort of. I'm quitting smoking.
 
 You see, to quit smoking could be one of the few reasons a person might ever have to be forgiven for succumbing to the urge for writing. 

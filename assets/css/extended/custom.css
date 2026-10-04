@@ -1,15 +1,33 @@
+/* ===============================================================
+   custom.css  (PaperMod: assets/css/extended/custom.css)
+
+   Contents
+   1. Tokens
+   2. Base type
+   3. Typeface roles: UI text vs. prose
+   4. Text wrapping
+   5. Post header and footer
+   6. Content headings
+   7. Prose elements: links and section breaks
+   8. Font rendering
+   9. Lists and archive
+   10. Mobile (keep last, it overrides earlier font sizes)
+   =============================================================== */
+
+
 /* ---------------------------------------------------------------
-   Layout
+   1. Tokens
    --------------------------------------------------------------- */
 
 :root {
     --main-width: 42rem;      /* 672px; PaperMod default is 720px */
     /* --nav-width: 42rem;       uncomment to align nav with text column */
-    --content-gap: 1.6em;
+    --content-gap: 1.6em;     /* your own spacing unit; not a PaperMod variable */
 }
 
+
 /* ---------------------------------------------------------------
-   Base type
+   2. Base type
    --------------------------------------------------------------- */
 
 body {
@@ -21,7 +39,14 @@ h1 {
     font-weight: 400;
 }
 
-/* UI text and minor headings: "main" family, lining proportional figures */
+
+/* ---------------------------------------------------------------
+   3. Typeface roles: UI text vs. prose
+
+   Prose and h1 use the theme's serif. Everything listed here
+   switches to the "main" family, with lining proportional figures.
+   --------------------------------------------------------------- */
+
 nav, h4, h5, h6,
 .post-content h2, .post-content h3,
 .post-tags, .breadcrumbs, .buttons,
@@ -30,30 +55,59 @@ nav, h4, h5, h6,
     font-feature-settings: "liga", "clig", "pnum" on, "lnum" on, "ss01" off;
 }
 
+/* Regular weight for the same group, except h2 and h3,
+   which keep their inherited weight on purpose. */
 nav, h4, h5, h6,
 .post-tags, .breadcrumbs, .buttons,
 .archive-meta, .post-meta, .footer, .entry-footer, .terms-tags {
     font-weight: 400;
 }
 
-.post-footer {
-    margin-top: calc(2* var(--content-gap));
+/* Small metadata sits at 0.8 of body size. */
+.post-meta,
+.breadcrumbs {
+    font-size: 0.8em;
 }
 
+
 /* ---------------------------------------------------------------
-   Post header: title, description, meta at equal spacing
+   4. Text wrapping
+
+   balance: short display text and UI labels, so wrapped lines
+            come out even and never strand a single word.
+   pretty:  paragraphs, so the last line is never a lone word.
+   --------------------------------------------------------------- */
+
+.post-title,
+nav, h4, h5, h6,
+.post-content h2, .post-content h3,
+.post-tags, .breadcrumbs, .buttons,
+.archive-meta, .post-meta, .footer, .entry-footer, .terms-tags {
+    text-wrap: balance;
+}
+
+.post-content :is(p, li, blockquote) {
+    text-wrap: pretty;
+}
+
+
+/* ---------------------------------------------------------------
+   5. Post header and footer
+
+   Title, description and meta are spaced by the flex gap alone,
+   so the three distances are always equal.
    --------------------------------------------------------------- */
 
 .post-header {
     margin-top: 0;
-    margin-bottom:calc(2* var(--content-gap));
+    margin-bottom: calc(2 * var(--content-gap));
     display: flex;
     flex-direction: column;
-    gap: 1em;                 /* 1 × body: 21px desktop, 20px phone */
+    gap: 1em;                 /* 1 x body: 21px desktop, 20px phone */
 }
 
 .post-title {
-    margin: 1em 0 0;        /* top space only; gap handles the rest */
+    margin: 1em 0 0;          /* top space only; the gap handles the rest */
     font-size: 2.1em;         /* 44px @ 21 */
     line-height: 1.2;
     letter-spacing: -0.015em;
@@ -64,13 +118,13 @@ nav, h4, h5, h6,
     margin: 0;
 }
 
-
-.post-meta, .breadcrumbs {
-  font-size: 0.8em
+.post-footer {
+    margin-top: calc(2 * var(--content-gap));
 }
 
+
 /* ---------------------------------------------------------------
-   Content headings (em-based, tracking the body clamp)
+   6. Content headings (em-based, tracking the body clamp)
    --------------------------------------------------------------- */
 
 .post-content h1 {
@@ -91,12 +145,65 @@ nav, h4, h5, h6,
     line-height: 1.3;
 }
 
-.post-content h4 { margin: 1.5em  0 1em;    font-size: 0.76em; } /* 16px @ 21 */
-.post-content h5 { margin: 1.71em 0 1.14em; font-size: 0.67em; } /* 14px @ 21 */
-.post-content h6 { margin: 2em    0 1.33em; font-size: 0.57em; } /* 12px @ 21 */
+.post-content h4 { margin: 1.5em  0 1em;    font-size: 0.76em; }  /* 16px @ 21 */
+.post-content h5 { margin: 1.71em 0 1.14em; font-size: 0.67em; }  /* 14px @ 21 */
+.post-content h6 { margin: 2em    0 1.33em; font-size: 0.57em; }  /* 12px @ 21 */
+
 
 /* ---------------------------------------------------------------
-   Lists and archive
+   7. Prose elements: links and section breaks
+   --------------------------------------------------------------- */
+
+/* Real underlines instead of PaperMod's box-shadow trick:
+   adjustable thickness and offset, and skips descenders. */
+.post-content a {
+    box-shadow: none;
+    text-decoration: underline;
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.2em;
+    text-decoration-skip-ink: auto;
+}
+
+/* "---" in Markdown renders as a centered ornament. */
+.post-content hr {
+    border: 0;
+    background: none;
+    height: auto;
+    margin: 2.75em 0;
+    text-align: center;
+    overflow: visible;
+}
+
+.post-content hr::after {
+    content: "⁂";
+    letter-spacing: 0.5em;
+    padding-inline-start: 0.5em;  /* cancels the trailing letter-spacing so it centers */
+    color: var(--secondary);
+}
+
+
+/* ---------------------------------------------------------------
+   8. Font rendering
+   --------------------------------------------------------------- */
+
+.post-content {
+    hanging-punctuation: first last;   /* Safari only; ignored elsewhere */
+    font-kerning: normal;
+    font-variant-ligatures: common-ligatures contextual;
+    font-synthesis: none;              /* never fake bold or italic */
+}
+
+/* Grayscale smoothing thins strokes on macOS: good for light text
+   on dark, wrong for dark text on light, so dark mode only. */
+body.dark,
+[data-theme="dark"] body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* ---------------------------------------------------------------
+   9. Lists and archive
    --------------------------------------------------------------- */
 
 .entry-content {
@@ -113,14 +220,26 @@ nav, h4, h5, h6,
     color: var(--secondary);
 }
 
+
 /* ---------------------------------------------------------------
-   Mobile
+   10. Mobile (keep last: these override the font sizes above)
    --------------------------------------------------------------- */
 
 @media (max-width: 600px) {
-    :root { --gap: 1.1rem; }
+    :root {
+        --gap: 1.1rem;        /* PaperMod's own variable: page side padding */
+    }
+
     .post-title,
-    .post-content h1 { font-size: 1.8em; }
-    .post-content h2 { font-size: 1.4em; }
-    .nav {border-bottom: 1px solid var(--primary);}
+    .post-content h1 {
+        font-size: 1.8em;
+    }
+
+    .post-content h2 {
+        font-size: 1.4em;
+    }
+
+    .nav {
+        border-bottom: 1px solid var(--primary);
+    }
 }
