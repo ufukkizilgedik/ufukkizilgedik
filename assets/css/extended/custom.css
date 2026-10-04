@@ -14,7 +14,7 @@
 
 body {
     font-size: clamp(1.25rem, 1.2083rem + 0.1667vw, 1.3125rem); /* 20px phone, 21px desktop */
-    line-height: 1.6;
+    line-height: 1.62;
 }
 
 h1 {
