@@ -22,7 +22,7 @@
 :root {
     --main-width: 42rem;      /* 672px; PaperMod default is 720px */
     /* --nav-width: 42rem;       uncomment to align nav with text column */
-    --content-gap: 1.6em;     /* your own spacing unit; not a PaperMod variable */
+    --content-gap: 1.5em;     /* your own spacing unit; not a PaperMod variable */
 }
 
 
@@ -31,8 +31,9 @@
    --------------------------------------------------------------- */
 
 body {
-    font-size: clamp(1.25rem, 1.2083rem + 0.1667vw, 1.3125rem); /* 20px phone, 21px desktop */
-    line-height: 1.62;
+    font-size: clamp(1.125rem, 1.0417rem + 0.3333vw, 1.25rem); /* 18px phone, 20px desktop */
+    line-height: 1.5;
+    font-family: "Martina Plantijn";
 }
 
 h1 {
@@ -48,10 +49,9 @@ h1 {
    --------------------------------------------------------------- */
 
 nav, h4, h5, h6,
-.post-content h2, .post-content h3,
 .post-tags, .breadcrumbs, .buttons,
 .archive-meta, .post-meta, .footer, .entry-footer, .terms-tags {
-    font-family: "main";
+    font-family: "Soehne", "main";
     font-feature-settings: "liga", "clig", "pnum" on, "lnum" on, "ss01" off;
 }
 
@@ -159,9 +159,15 @@ nav, h4, h5, h6,
 .post-content a {
     box-shadow: none;
     text-decoration: underline;
-    text-decoration-thickness: 0.06em;
-    text-underline-offset: 0.2em;
+    text-decoration-thickness: max(0.0313em, 1px);
+    text-underline-offset: 0.12em;
     text-decoration-skip-ink: auto;
+    text-decoration-color: var(--secondary);
+}
+
+.post-content a:hover {
+    text-decoration-color: #c10016;
+    text-decoration-thickness: max(0.0625em, 2px);
 }
 
 /* "---" in Markdown renders as a centered ornament. */
@@ -218,6 +224,32 @@ body.dark,
 .archive-month-header,
 .archive-year-header {
     color: var(--secondary);
+}
+
+/* Old-style figures in running text (opt-in in this font) */
+.post-content {
+    font-variant-numeric: oldstyle-nums;
+}
+
+/* Tables and aligned numbers: tabular figures instead */
+.post-content table {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Small caps for acronyms. Needs <abbr>, or a span with class "sc" */
+.post-content abbr,
+.sc {
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.06em;
+    text-decoration: none;     /* browsers dot-underline abbr by default */
+}
+
+/* Footnote markers: the font's designed superiors, not shrunken digits */
+.post-content sup {
+    font-feature-settings: "sups";
+    font-size: inherit;
+    vertical-align: baseline;
+    line-height: 0;
 }
 
 
