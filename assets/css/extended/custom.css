@@ -8,10 +8,17 @@
    4. Text wrapping
    5. Post header and footer
    6. Content headings
-   7. Prose elements: links and section breaks
-   8. Font rendering
-   9. Lists and archive
-   10. Mobile (keep last, it overrides earlier font sizes)
+   7. Prose elements: links, section breaks, quotes, small caps
+   8. Footnotes
+   9. Font rendering
+   10. Lists and archive
+   11. Mobile
+
+   Cascade constraints, so nothing gets moved by accident:
+   - Section 8 must stay after section 7: ".footnotes hr" overrides
+     ".post-content hr" at equal specificity.
+   - Section 11 must stay last: it overrides font sizes and
+     blockquote padding set above at equal specificity.
    =============================================================== */
 
 
@@ -23,6 +30,12 @@
     --main-width: 42rem;      /* 672px; PaperMod default is 720px */
     /* --nav-width: 42rem;       uncomment to align nav with text column */
     --content-gap: 1.5em;     /* your own spacing unit; not a PaperMod variable */
+
+    --link-hover: #c10016;
+
+    /* Ligatures on, lining proportional figures, ss01 off.
+       Used by UI text (section 3) and the post title (section 5). */
+    --features-lining: "liga", "clig", "pnum" on, "lnum" on, "ss01" off;
 }
 
 
@@ -33,7 +46,6 @@
 body {
     font-size: clamp(1.125rem, 1.0417rem + 0.3333vw, 1.25rem); /* 18px phone, 20px desktop */
     line-height: 1.5;
-    font-family: "Martina Plantijn";
 }
 
 h1 {
@@ -44,29 +56,28 @@ h1 {
 /* ---------------------------------------------------------------
    3. Typeface roles: UI text vs. prose
 
-   Prose and h1 use the theme's serif. Everything listed here
-   switches to the "main" family, with lining proportional figures.
+   Prose, h1, h2 and h3 use the theme's serif. Everything listed
+   here switches to the "main" family at regular weight, with
+   lining proportional figures. Footnotes set their own family
+   (section 8).
    --------------------------------------------------------------- */
 
 nav, h4, h5, h6,
 .post-tags, .breadcrumbs, .buttons,
 .archive-meta, .post-meta, .footer, .entry-footer, .terms-tags {
-    font-family: "Soehne", "main";
-    font-feature-settings: "liga", "clig", "pnum" on, "lnum" on, "ss01" off;
-}
-
-/* Regular weight for the same group, except h2 and h3,
-   which keep their inherited weight on purpose. */
-nav, h4, h5, h6,
-.post-tags, .breadcrumbs, .buttons,
-.archive-meta, .post-meta, .footer, .entry-footer, .terms-tags {
+    font-family: "main";
     font-weight: 400;
+    font-feature-settings: var(--features-lining);
 }
 
-/* Small metadata sits at 0.8 of body size. */
+/* Small UI text, relative to body size. */
 .post-meta,
 .breadcrumbs {
     font-size: 0.8em;
+}
+
+.terms-tags {
+    font-size: 0.76em;
 }
 
 
@@ -75,7 +86,7 @@ nav, h4, h5, h6,
 
    balance: short display text and UI labels, so wrapped lines
             come out even and never strand a single word.
-   pretty:  paragraphs, so the last line is never a lone word.
+   pretty:  running text, so the last line is never a lone word.
    --------------------------------------------------------------- */
 
 .post-title,
@@ -103,14 +114,15 @@ nav, h4, h5, h6,
     margin-bottom: calc(2 * var(--content-gap));
     display: flex;
     flex-direction: column;
-    gap: 1em;                 /* 1 x body: 21px desktop, 20px phone */
+    gap: 1em;                 /* 1 x body: 20px desktop, 18px phone */
 }
 
 .post-title {
     margin: 1em 0 0;          /* top space only; the gap handles the rest */
-    font-size: 2.1em;         /* 44px @ 21 */
+    font-size: 2.1em;         /* 42px @ 20 */
     line-height: 1.2;
     letter-spacing: -0.015em;
+    font-feature-settings: var(--features-lining);
 }
 
 .post-description,
@@ -122,6 +134,10 @@ nav, h4, h5, h6,
     margin-top: calc(2 * var(--content-gap));
 }
 
+.post-footer .post-tags {
+    text-transform: capitalize;
+}
+
 
 /* ---------------------------------------------------------------
    6. Content headings (em-based, tracking the body clamp)
@@ -129,29 +145,29 @@ nav, h4, h5, h6,
 
 .post-content h1 {
     margin: 1.6em auto 0.8em;
-    font-size: 2.1em;         /* 44px @ 21 */
+    font-size: 2.1em;         /* 42px @ 20 */
     line-height: 1.2;
 }
 
 .post-content h2 {
     margin: 1.75em auto 0.75em;
-    font-size: 1.52em;        /* 32px @ 21 */
+    font-size: 1.52em;        /* 30px @ 20 */
     line-height: 1.25;
 }
 
 .post-content h3 {
     margin: 1.83em 0 0.67em;
-    font-size: 1.14em;        /* 24px @ 21 */
+    font-size: 1.14em;        /* 23px @ 20 */
     line-height: 1.3;
 }
 
-.post-content h4 { margin: 1.5em  0 1em;    font-size: 0.76em; }  /* 16px @ 21 */
-.post-content h5 { margin: 1.71em 0 1.14em; font-size: 0.67em; }  /* 14px @ 21 */
-.post-content h6 { margin: 2em    0 1.33em; font-size: 0.57em; }  /* 12px @ 21 */
+.post-content h4 { margin: 1.5em  0 1em;    font-size: 0.76em; }  /* 15px @ 20 */
+.post-content h5 { margin: 1.71em 0 1.14em; font-size: 0.67em; }  /* 13px @ 20 */
+.post-content h6 { margin: 2em    0 1.33em; font-size: 0.57em; }  /* 11px @ 20 */
 
 
 /* ---------------------------------------------------------------
-   7. Prose elements: links and section breaks
+   7. Prose elements: links, section breaks, quotes, small caps
    --------------------------------------------------------------- */
 
 /* Real underlines instead of PaperMod's box-shadow trick:
@@ -166,7 +182,7 @@ nav, h4, h5, h6,
 }
 
 .post-content a:hover {
-    text-decoration-color: #c10016;
+    text-decoration-color: var(--link-hover);
     text-decoration-thickness: max(0.0625em, 2px);
 }
 
@@ -187,16 +203,86 @@ nav, h4, h5, h6,
     color: var(--secondary);
 }
 
+.post-content blockquote {
+    padding-left: 1.5em;
+    padding-right: 0;
+    border-inline-start: 1px solid var(--border);
+}
+
+/* Small caps for acronyms. Needs <abbr>, or a span with class "sc". */
+.post-content abbr,
+.sc {
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.06em;
+    text-decoration: none;     /* browsers dot-underline abbr by default */
+}
+
 
 /* ---------------------------------------------------------------
-   8. Font rendering
+   8. Footnotes (must stay after section 7)
+   --------------------------------------------------------------- */
+
+/* Markers in the text: the font's designed superiors,
+   not shrunken digits. */
+.post-content sup {
+    font-feature-settings: "sups";
+    font-size: inherit;
+    vertical-align: baseline;
+    line-height: 0;
+}
+
+/* Marker links and back-links: quiet, no underline. */
+.post-content .footnote-ref,
+.footnotes .footnote-backref {
+    text-decoration: none;
+    color: var(--secondary);
+}
+
+/* Rule above the list: a plain line instead of the ornament. */
+.footnotes hr::after {
+    display: none;
+}
+
+.footnotes hr {
+    border: 1px solid var(--border);
+    margin-bottom: 0;
+}
+
+/* The list itself, set in the UI family. */
+.footnotes ol {
+    font-family: "main";
+    font-size: 0.76em;
+    color: var(--secondary);
+    padding-left: 3em;
+}
+
+.footnotes ol li {
+    margin-top: 1em;
+}
+
+/* The number-to-text gap cannot be set on ::marker, which ignores
+   padding and margin. To widen it, lengthen the marker's own text:
+.footnotes ol li::marker {
+    content: counter(list-item) ".\2002";
+}
+   or replace the marker with a positioned ::before. */
+
+
+/* ---------------------------------------------------------------
+   9. Font rendering
    --------------------------------------------------------------- */
 
 .post-content {
     hanging-punctuation: first last;   /* Safari only; ignored elsewhere */
     font-kerning: normal;
     font-variant-ligatures: common-ligatures contextual;
-    font-synthesis: none;              /* never fake bold or italic */
+    font-variant-numeric: oldstyle-nums;  /* old-style figures are opt-in in this font */
+    font-synthesis: none;              /* never fake bold, italic or small caps */
+}
+
+/* Tables and aligned numbers: tabular figures instead. */
+.post-content table {
+    font-variant-numeric: tabular-nums;
 }
 
 /* Grayscale smoothing thins strokes on macOS: good for light text
@@ -209,7 +295,7 @@ body.dark,
 
 
 /* ---------------------------------------------------------------
-   9. Lists and archive
+   10. Lists and archive
    --------------------------------------------------------------- */
 
 .entry-content {
@@ -226,35 +312,9 @@ body.dark,
     color: var(--secondary);
 }
 
-/* Old-style figures in running text (opt-in in this font) */
-.post-content {
-    font-variant-numeric: oldstyle-nums;
-}
-
-/* Tables and aligned numbers: tabular figures instead */
-.post-content table {
-    font-variant-numeric: tabular-nums;
-}
-
-/* Small caps for acronyms. Needs <abbr>, or a span with class "sc" */
-.post-content abbr,
-.sc {
-    font-variant-caps: all-small-caps;
-    letter-spacing: 0.06em;
-    text-decoration: none;     /* browsers dot-underline abbr by default */
-}
-
-/* Footnote markers: the font's designed superiors, not shrunken digits */
-.post-content sup {
-    font-feature-settings: "sups";
-    font-size: inherit;
-    vertical-align: baseline;
-    line-height: 0;
-}
-
 
 /* ---------------------------------------------------------------
-   10. Mobile (keep last: these override the font sizes above)
+   11. Mobile (keep last: these override rules above)
    --------------------------------------------------------------- */
 
 @media (max-width: 600px) {
@@ -264,11 +324,15 @@ body.dark,
 
     .post-title,
     .post-content h1 {
-        font-size: 1.8em;
+        font-size: 1.8em;     /* 32px @ 18 */
     }
 
     .post-content h2 {
-        font-size: 1.4em;
+        font-size: 1.4em;     /* 25px @ 18 */
+    }
+
+    .post-content blockquote {
+        padding-left: 1em;
     }
 
     .nav {
