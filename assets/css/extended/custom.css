@@ -27,7 +27,7 @@
    --------------------------------------------------------------- */
 
 :root {
-    --main-width: 42rem;      /* 672px; PaperMod default is 720px */
+    --main-width: 40rem;      /* 672px; PaperMod default is 720px */
     /* --nav-width: 42rem;       uncomment to align nav with text column */
     --content-gap: 1.5em;     /* your own spacing unit; not a PaperMod variable */
 
@@ -38,20 +38,27 @@
     --features-lining: "liga", "clig", "pnum" on, "lnum" on, "ss01" off;
 }
 
+.main {
+    padding: calc(var(--gap)*1.5);
+}
+
+.logo, #menu {
+    margin: auto calc(var(--gap)*1.5);
+}
+
 
 /* ---------------------------------------------------------------
    2. Base type
    --------------------------------------------------------------- */
 
 body {
-    font-size: clamp(1.125rem, 1.0417rem + 0.3333vw, 1.25rem); /* 18px phone, 20px desktop */
-    line-height: 1.5;
+  font-size: clamp(1.1125rem, 1.0833rem + 0.1167vw, 1.15625rem); /* 17.8px phone, 18.5px desktop */
+  line-height: 1.5;
 }
 
 h1 {
     font-weight: 400;
 }
-
 
 /* ---------------------------------------------------------------
    3. Typeface roles: UI text vs. prose
@@ -128,6 +135,10 @@ nav, h4, h5, h6,
 .post-description,
 .post-meta {
     margin: 0;
+}
+
+.post-description {
+    font-style: italic;
 }
 
 .post-footer {
